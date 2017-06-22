@@ -48,7 +48,7 @@ func init() {
 	}).Parse(`package {{.Package}}
 
 import (
-	"github.com/GeertJohan/go.rice/embedded"
+	"github.com/nkovacs/go.rice/embedded"
 	"time"
 )
 

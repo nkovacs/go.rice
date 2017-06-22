@@ -13,8 +13,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/GeertJohan/go.rice/embedded"
 	"github.com/akavel/rsrc/coff"
+	"github.com/nkovacs/go.rice/embedded"
 )
 
 type sizedReader struct {
@@ -43,7 +43,7 @@ import "C"
 import (
 	"bytes"
 	"encoding/gob"
-	"github.com/GeertJohan/go.rice/embedded"
+	"github.com/nkovacs/go.rice/embedded"
 	"unsafe"
 )
 

@@ -1,7 +1,7 @@
 ## go.rice
 
-[![Build Status](https://travis-ci.org/GeertJohan/go.rice.png)](https://travis-ci.org/GeertJohan/go.rice)
-[![Godoc](https://img.shields.io/badge/godoc-go.rice-blue.svg?style=flat-square)](https://godoc.org/github.com/GeertJohan/go.rice)
+[![Build Status](https://travis-ci.org/nkovacs/go.rice.png)](https://travis-ci.org/nkovacs/go.rice)
+[![Godoc](https://img.shields.io/badge/godoc-go.rice-blue.svg?style=flat-square)](https://godoc.org/github.com/nkovacs/go.rice)
 
 go.rice is a [Go](http://golang.org) package that makes working with resources such as html,js,css,images and templates very easy. During development `go.rice` will load required files directly from disk. Upon deployment it is easy to add all resource files to a executable using the `rice` tool, without changing the source code for your package. go.rice provides several methods to add resources to a binary.
 
@@ -14,13 +14,13 @@ This only works when the source is available to the machine executing the binary
 
 Use `go get` to install the package the `rice` tool.
 ```
-go get github.com/GeertJohan/go.rice
-go get github.com/GeertJohan/go.rice/rice
+go get github.com/nkovacs/go.rice
+go get github.com/nkovacs/go.rice/rice
 ```
 
 ### Package usage
 
-Import the package: `import "github.com/GeertJohan/go.rice"`
+Import the package: `import "github.com/nkovacs/go.rice"`
 
 **Serving a static content folder over HTTP with a rice Box**
 ```go
@@ -144,8 +144,8 @@ Less important stuff:
 
 ### Package documentation
 
-You will find package documentation at [godoc.org/github.com/GeertJohan/go.rice][godoc].
+You will find package documentation at [godoc.org/github.com/nkovacs/go.rice][godoc].
 
 
- [license]: https://github.com/GeertJohan/go.rice/blob/master/LICENSE
- [godoc]: http://godoc.org/github.com/GeertJohan/go.rice
+ [license]: https://github.com/nkovacs/go.rice/blob/master/LICENSE
+ [godoc]: http://godoc.org/github.com/nkovacs/go.rice
