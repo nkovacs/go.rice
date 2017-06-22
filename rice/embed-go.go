@@ -1,13 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
 	"go/build"
 	"go/format"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -99,10 +99,11 @@ func writeBoxesGo(pkg *build.Package, out io.Writer) error {
 					ModTime:    info.ModTime().Unix(),
 				}
 				verbosef("\tincludes file: '%s'\n", fileData.FileName)
-				fileData.Content, err = ioutil.ReadFile(path)
-				if err != nil {
-					return fmt.Errorf("error reading file content while walking box: %s\n", err)
-				}
+
+				// Instead of injecting content, inject placeholder for fasttemplate.
+				// This allows us to stream the content into the final file,
+				// and it also avoids running gofmt on a very large source code.
+				fileData.Path = path
 				box.Files = append(box.Files, fileData)
 
 				// add tree entry
@@ -116,7 +117,7 @@ func writeBoxesGo(pkg *build.Package, out io.Writer) error {
 			return nil
 		})
 		if err != nil {
-			return err
+			return fmt.Errorf("filepath walk: %v\n", err)
 		}
 		boxes = append(boxes, box)
 
@@ -140,7 +141,12 @@ func writeBoxesGo(pkg *build.Package, out io.Writer) error {
 	}
 
 	// write source to file
-	_, err = io.Copy(out, bytes.NewBuffer(embedSource))
+	bufWriter := bufio.NewWriterSize(out, 100*1024)
+	err = embeddedBoxFasttemplate(bufWriter, string(embedSource))
+	if err != nil {
+		return fmt.Errorf("error writing embedSource to file: %s\n", err)
+	}
+	err = bufWriter.Flush()
 	if err != nil {
 		return fmt.Errorf("error writing embedSource to file: %s\n", err)
 	}
