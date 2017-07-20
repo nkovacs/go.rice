@@ -253,7 +253,7 @@ func (vd *virtualDir) seek(offset int64, whence int) (int64, error) {
 			Err:  errors.New("bad file descriptor"),
 		}
 	}
-	if whence == io.SeekStart && offset == 0 {
+	if whence == 0 && offset == 0 {
 		// special case for rewinddir
 		vd.offset = 0
 		return 0, nil
