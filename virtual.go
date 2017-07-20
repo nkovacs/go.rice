@@ -80,19 +80,21 @@ func (vf *virtualFile) read(bts []byte) (int, error) {
 			Err:  errors.New("bad file descriptor"),
 		}
 	}
+	if vf.offset >= int64(len(vf.Content)) {
+		return 0, io.EOF
+	}
 
 	end := vf.offset + int64(len(bts))
 
+	var err error
 	if end >= int64(len(vf.Content)) {
-		// end of file, so return what we have + EOF
-		n := copy(bts, vf.Content[vf.offset:])
-		vf.offset = 0
-		return n, io.EOF
+		end = int64(len(vf.Content))
+		err = io.EOF
 	}
 
 	n := copy(bts, vf.Content[vf.offset:end])
 	vf.offset += int64(n)
-	return n, nil
+	return n, err
 
 }
 
