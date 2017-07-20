@@ -203,24 +203,31 @@ func (vd *virtualDir) readdir(n int) (fi []os.FileInfo, err error) {
 	// Sort it by filename (lexical order)
 	sort.Sort(SortByName(files))
 
-	// Return all contents if that's what is requested
+	// Return all remainign contents if that's what is requested
 	if n <= 0 {
-		vd.offset = 0
-		return files, nil
+		offset := vd.offset
+		vd.offset = len(files)
+		return files[offset:], nil
 	}
 
+	end := vd.offset + n
 	// If user has requested past the end of our list
-	// return what we can and send an EOF
-	if vd.offset+n >= len(files) {
-		offset := vd.offset
-		vd.offset = 0
-		return files[offset:], io.EOF
+	// return what we can
+	if end >= len(files) {
+		end = len(files)
 	}
 
 	offset := vd.offset
-	vd.offset += n
-	return files[offset : offset+n], nil
+	vd.offset = end
+	fi = files[offset:end]
 
+	if len(fi) == 0 && n > 0 {
+		// Per File.Readdir, the slice must be non-empty or err
+		// must be non-nil if n > 0.
+		err = io.EOF
+	}
+
+	return fi, err
 }
 
 func (vd *virtualDir) read(bts []byte) (int, error) {
@@ -245,6 +252,11 @@ func (vd *virtualDir) seek(offset int64, whence int) (int64, error) {
 			Path: vd.EmbeddedDir.Filename,
 			Err:  errors.New("bad file descriptor"),
 		}
+	}
+	if whence == io.SeekStart && offset == 0 {
+		// special case for rewinddir
+		vd.offset = 0
+		return 0, nil
 	}
 	return 0, &os.PathError{
 		Op:   "seek",
